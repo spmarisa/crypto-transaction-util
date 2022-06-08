@@ -32,7 +32,7 @@ from [a1]
 to [a10, a11, a12]
 TMP_HASH = {a3 => [T1], a4 => [T1], a5 => [T2], a6 => [T2], a7 =>[T2], a1 => [T3]}
 
-#OUTPUT for 680000
+# OUTPUT for 680000
 bd3204ede500b17d04b0f1d7373aafce1b4ba25352670c6618f76129c031cabc - 21
 03b132918c3b83234c77305b664aa350898711e05cc882707163a3fdf6c515b9 - 20
 e1bc0b939809e14b42a61ef25a60f7b1c94d3b800cb41930a906af5caa8b16b9 - 20

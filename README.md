@@ -18,6 +18,7 @@ vout - bc1q8x4xn0g80axsgt94md3c8weyxytxxmpm77jp7z
 
 
 require './block.rb'
+
 block = Block.new("680000")
 
 block.populate_raw_transactions()
@@ -27,6 +28,8 @@ block.save_raw_transactions()
 block.process_raw_transactions()
 
 block.save_transactions()
+
+block.update_ancestry_data()
 
 
 require './clients/block_stream_client.rb'

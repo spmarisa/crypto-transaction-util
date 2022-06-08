@@ -1,14 +1,14 @@
 class TransactionRepo
   require 'json'
 
-  def self.save(block_hash, transactions_array)
-    File.write("./db/#{block_hash}.json",transactions_array.to_json)
+  def self.save(file_name, data)
+    File.write("./db/#{file_name}.json",data.to_json)
   end
 
-  def self.find(block_hash)
-    return nil unless File.exists? "./db/#{block_hash}.json"
+  def self.find(file_name)
+    return nil unless File.exists? "./db/#{file_name}.json"
 
-    file = File.open "#{block_hash}.json"
+    file = File.open "./db/#{file_name}.json"
     data = JSON.load file
     file.close
 

@@ -32,6 +32,22 @@ class TransactionsProcessingService
     return transactions
   end
 
+  def self.update_ancestry_data(transactions)
+    tmp_hash = {}
 
+    transactions.each do |txn|
+      txn["ancestry_count"] = txn["vin"].map {|x| tmp_hash[x] || []}.flatten(1).uniq.count
+
+
+      txn["vout"].each do |f|
+        if tmp_hash[f]
+          tmp_hash[f] << txn["txid"]
+        else
+          tmp_hash[f] = [txn["txid"]]
+        end
+      end
+
+    end
+  end
 
 end

@@ -5,14 +5,16 @@ class Block
 
   attr_accessor :id, :hash, :block_height, :tx_count, :transactions, :raw_transactions
 
+
+  # created new object with required fields
   def initialize(block_height)
     @block_height = block_height
     @hash ||= BlockStreamClient.get_hash(@block_height)
     @tx_count ||= BlockStreamClient.get_block_info(@hash)["tx_count"]
-    @transactions = []
-    @raw_transactions = []
+    @transactions, @raw_transactions = [], []
   end
 
+  # populates data either from local db or external client
   def populate_raw_transactions()
     raw_transactions_resultset = TransactionRepo.find("raw" + @hash)
 
@@ -26,16 +28,24 @@ class Block
     return @raw_transactions.count
   end
 
+  # process raw transactions to get only required fields
   def process_raw_transactions()
     @transactions = TransactionsProcessingService.process_raw_transactions(@raw_transactions)
     return @transactions.count
   end
 
+  def update_ancestry_data()
+    TransactionsProcessingService.update_ancestry_data(@transactions)
+    return @transactions.count
+  end
+
+  # saves raw transactions data
   def save_raw_transactions()
     TransactionRepo.save("raw" + @hash, @raw_transactions)
     return @raw_transactions.count
   end
 
+  # saves transactions data
   def save_transactions()
     TransactionRepo.save(@hash, @transactions)
     return @transactions.count

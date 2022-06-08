@@ -1,15 +1,43 @@
 class Block
   require_relative 'clients/block_stream_client'
+  require_relative 'repos/transaction_repo'
+  require_relative 'services/transactions_processing_service'
+
+  attr_accessor :id, :hash, :block_height, :tx_count, :transactions, :raw_transactions
 
   def initialize(block_height)
-    @options = { data: { block_height: block_height } }
+    @block_height = block_height
+    @hash ||= BlockStreamClient.get_hash(@block_height)
+    @tx_count ||= BlockStreamClient.get_block_info(@hash)["tx_count"]
+    @transactions = []
+    @raw_transactions = []
   end
 
-  def hash
-    BlockStreamClient.get_hash(@options[:data][:block_height])
+  def populate_raw_transactions()
+    raw_transactions_resultset = TransactionRepo.find("raw" + @hash)
+
+    if raw_transactions_resultset
+        puts "Loading data from DB."
+      @raw_transactions = raw_transactions_resultset
+    else
+      @raw_transactions = TransactionsProcessingService.get_raw_transactions_data(@hash, @tx_count)
+    end
+
+    return @raw_transactions.count
   end
 
-  # def users
-  #   self.class.get("/2.2/users", @options)
-  # end
+  def process_raw_transactions()
+    @transactions = TransactionsProcessingService.process_raw_transactions(@raw_transactions)
+    return @transactions.count
+  end
+
+  def save_raw_transactions()
+    TransactionRepo.save("raw" + @hash, @raw_transactions)
+    return @raw_transactions.count
+  end
+
+  def save_transactions()
+    TransactionRepo.save(@hash, @transactions)
+    return @transactions.count
+  end
 end

@@ -15,10 +15,7 @@ class BlockStreamClient
   # curl https://blockstream.info/api/block/000000000000000000076c036ff5119e5a5a74df77abf64203473364509f7732
   def self.get_block_info(block_hash)
     # exception if input nil
-
     response =  HTTParty.get(CLIENT_ENDPOINT + "block/" + block_hash)
-
-    puts response.body
 
     response.success? ? JSON.parse(response.body) : throw_exception(response)
   end

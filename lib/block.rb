@@ -5,7 +5,6 @@ class Block
 
   attr_accessor :id, :hash, :block_height, :tx_count, :transactions, :raw_transactions
 
-
   # created new object with required fields
   def initialize(block_height)
     @block_height = block_height
@@ -34,6 +33,7 @@ class Block
     return @transactions.count
   end
 
+  # process and find out the ancestory set
   def update_ancestry_data()
     TransactionsProcessingService.update_ancestry_data(@transactions)
     return @transactions.count
@@ -49,5 +49,11 @@ class Block
   def save_transactions()
     TransactionRepo.save(@hash, @transactions)
     return @transactions.count
+  end
+
+  def print_top_ancestory_transactions()
+    @transactions.sort_by {|k| k["ancestry_count"]}.last(10).reverse.each do |f|
+      puts "#{f["txid"]} - #{f["ancestry_count"]}"
+    end
   end
 end

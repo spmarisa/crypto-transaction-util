@@ -6,30 +6,28 @@ This utility uses blockstream for fetching info
 
 Start - https://github.com/Blockstream/esplora/blob/master/API.md#get-blockhashtxsstart_index
 
+# DRY run of how to calculate the transaction ancestory
 
-txid - f4c3f0737be2bd3efbd23212afb174f667d4c30191c0d747dc6cdf1c3b7e059c
-vin - bc1qq28ltwdzh44r29a3t2nhp6e9jm6cnmpkjql02n
-vout - bc1qt3eqtd73mzu8053n2pnyflzpu8hzq2zlcghdar
-
-
-txid - f4c3f0737be2bd3efbd23212afb174f667d4c30191c0d747dc6cdf1c3b7e059c
-vin - bc1qq28ltwdzh44r29a3t2nhp6e9jm6cnmpkjql02n
-vout - bc1q8x4xn0g80axsgt94md3c8weyxytxxmpm77jp7z
+T1
+from [a1]
+to [a3, a4]
+TMP_HASH = {a3 => [T1], a4 => [T1]}
 
 
-require './block.rb'
-
-block = Block.new("680000")
-
-block.populate_raw_transactions()
-
-block.save_raw_transactions()
-
-block.process_raw_transactions()
-
-block.save_transactions()
-
-block.update_ancestry_data()
+T2
+from [a4]
+to [a5, a6, a7]
+TMP_HASH = {a3 => [T1], a4 => [T1], a5 => [T2], a6 => [T2], a7 =>[T2]}
 
 
-require './clients/block_stream_client.rb'
+T3
+from [a5]
+to [a1]
+TMP_HASH = {a3 => [T1], a4 => [T1], a5 => [T2], a6 => [T2], a7 =>[T2], a1 => [T3]}
+
+
+
+T4
+from [a1]
+to [a10, a11, a12]
+TMP_HASH = {a3 => [T1], a4 => [T1], a5 => [T2], a6 => [T2], a7 =>[T2], a1 => [T3]}
